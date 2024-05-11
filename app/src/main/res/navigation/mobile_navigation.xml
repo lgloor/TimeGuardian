@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_time">
+
+    <fragment
+        android:id="@+id/navigation_time"
+        android:name="com.os.timeguardian.ui.time.TimeFragment"
+        android:label="@string/title_time"
+        tools:layout="@layout/fragment_time" />
+
+    <fragment
+        android:id="@+id/navigation_openings"
+        android:name="com.os.timeguardian.ui.openings.OpeningsFragment"
+        android:label="@string/title_openings"
+        tools:layout="@layout/fragment_openings" />
+
+    <fragment
+        android:id="@+id/navigation_timeplan"
+        android:name="com.os.timeguardian.ui.timeplan.TimeplanFragment"
+        android:label="@string/title_timeplan"
+        tools:layout="@layout/fragment_timeplan" />
+</navigation>
