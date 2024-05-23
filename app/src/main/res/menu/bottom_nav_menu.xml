@@ -3,17 +3,18 @@
 
     <item
         android:id="@+id/navigation_time"
-        android:icon="@drawable/baseline_watch_later_24"
+        android:icon="@drawable/ic_lock"
         android:title="@string/title_time" />
 
     <item
         android:id="@+id/navigation_openings"
-        android:icon="@drawable/ic_dashboard_black_24dp"
+        android:icon="@drawable/ic_watch"
         android:title="@string/title_openings" />
 
     <item
         android:id="@+id/navigation_timeplan"
-        android:icon="@drawable/baseline_app_blocking_24"
-        android:title="@string/title_timeplan" />
+        android:icon="@drawable/ic_exclamation_mark"
+        android:title="@string/title_timeplan"
+        />
 
 </menu>

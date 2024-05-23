@@ -54,7 +54,10 @@ public class OpeningsFragment extends Fragment {
         PackageManager packageManager = requireContext().getPackageManager();
 
         List<Map<String, Integer>> usageStatsPastSevenDays = service.getUsageStatsPastSevenDays();
+        Map<String, Integer> usageStatsToday = service.getUsageStatsToday();
         System.out.println(usageStatsPastSevenDays);
+        System.out.println(usageStatsToday);
+
 
         return root;
     }
