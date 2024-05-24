@@ -4,17 +4,25 @@
     <item
         android:id="@+id/navigation_time"
         android:icon="@drawable/ic_lock"
-        android:title="@string/title_time" />
+        android:title=""/>
 
     <item
         android:id="@+id/navigation_openings"
         android:icon="@drawable/ic_watch"
-        android:title="@string/title_openings" />
+        android:title=""/>
 
     <item
         android:id="@+id/navigation_timeplan"
         android:icon="@drawable/ic_exclamation_mark"
-        android:title="@string/title_timeplan"
+        android:title=""
         />
 
 </menu>
+
+
+
+<!--
+@string/title_time
+@string/title_openings
+ @string/title_timeplan
+ -->

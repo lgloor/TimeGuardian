@@ -26,7 +26,7 @@ public class TimeFragment extends Fragment {
         binding = FragmentTimeBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final RecyclerView recyclerView = binding.recycleView;
+        //final RecyclerView recyclerView = binding.recycleView;
         //timeViewModel.getText().observe(getViewLifecycleOwner(), );
         //final TextView textView = binding.textHome;
         //timeViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
