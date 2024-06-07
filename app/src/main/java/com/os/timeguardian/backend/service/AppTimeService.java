@@ -48,8 +48,7 @@ public class AppTimeService extends Service {
     }
 
     public Map<String, Long> getUsageStatsToday() {
-        if (usageStatsTodayCache != null
-                && usageStatsTodayCache.first >= System.currentTimeMillis() - TEN_MINUTES) {
+        if (cacheValid(usageStatsTodayCache)) {
             return usageStatsTodayCache.second;
         }
 
@@ -62,8 +61,7 @@ public class AppTimeService extends Service {
     }
 
     public List<Map<String, Long>> getUsageStatsTodayGroupByHours() {
-        if (usageStatsTodayGroupByHoursCache != null
-                && usageStatsTodayGroupByHoursCache.first >= System.currentTimeMillis() - TEN_MINUTES) {
+        if (cacheValid(usageStatsTodayGroupByHoursCache)) {
             return usageStatsTodayGroupByHoursCache.second;
         }
 
@@ -89,8 +87,7 @@ public class AppTimeService extends Service {
     }
 
     public List<Map<String, Long>> getUsageStatsPastSevenDays() {
-        if (usageStatsPastSevenDaysCache != null
-                && usageStatsPastSevenDaysCache.first >= System.currentTimeMillis() - TEN_MINUTES) {
+        if (cacheValid(usageStatsPastSevenDaysCache)) {
             return usageStatsPastSevenDaysCache.second;
         }
 
@@ -113,6 +110,10 @@ public class AppTimeService extends Service {
         List<Map<String, Long>> weekList = getValuesFromFutures(numberOfDays, futures);
         usageStatsPastSevenDaysCache = new Pair<>(System.currentTimeMillis(), weekList);
         return weekList;
+    }
+
+    private static boolean cacheValid(Pair<Long, ?> cache) {
+        return cache != null && cache.first >= System.currentTimeMillis() - TEN_MINUTES;
     }
 
     @NonNull
