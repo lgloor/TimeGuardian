@@ -36,6 +36,7 @@ public class AppTimeService extends Service {
     private static Pair<Long, Map<String, Long>> usageStatsTodayCache;
     private static Pair<Long, List<Map<String, Long>>> usageStatsTodayGroupByHoursCache;
     private static Pair<Long, List<Map<String, Long>>> usageStatsPastSevenDaysCache;
+    private static Pair<Long, List<Map<String, Integer>>> openingAmountsPastSevenDaysCache;
     private static List<String> allPackageNames;
     private static final String TAG = "AppTimeService";
     private final PackageManager packageManager;
@@ -117,9 +118,9 @@ public class AppTimeService extends Service {
     }
 
     @NonNull
-    private static List<Map<String, Long>> getValuesFromFutures(int hoursToShow, List<Future<Map<String, Long>>> futures) {
-        List<Map<String, Long>> statsList = new ArrayList<>(hoursToShow);
-        for (Future<Map<String, Long>> future : futures) {
+    private static <T,S> List<Map<T, S>> getValuesFromFutures(int hoursToShow, List<Future<Map<T, S>>> futures) {
+        List<Map<T, S>> statsList = new ArrayList<>(hoursToShow);
+        for (Future<Map<T, S>> future : futures) {
             try {
                 statsList.add(future.get());
             } catch (ExecutionException | InterruptedException e) {
@@ -184,27 +185,13 @@ public class AppTimeService extends Service {
     private Map<String, Long> getUsageTimeFromEvents(List<String> packageNames, Map<String, List<Event>> eventsByPackage) {
         Map<String, Long> usageTimeMap = new HashMap<>();
         for (String packageName : packageNames) {
-            String userFriendlyAppName;
-            userFriendlyAppName = getUserFriendlyAppName(packageName);
             long time = getTotalTimeEvents(Objects.requireNonNull(eventsByPackage.getOrDefault(packageName, new ArrayList<>())));
             if (time > 0) {
-                usageTimeMap.put(userFriendlyAppName, time);
+                usageTimeMap.put(packageName, time);
             }
         }
         return usageTimeMap;
     }
-
-    @NonNull
-    private String getUserFriendlyAppName(String packageName) {
-        String userFriendlyAppName;
-        try {
-            userFriendlyAppName = packageManager.getApplicationLabel(packageManager.getApplicationInfo(packageName, 0)).toString();
-        } catch (PackageManager.NameNotFoundException e) {
-            userFriendlyAppName = packageName;
-        }
-        return userFriendlyAppName;
-    }
-
     private static long getTotalTimeEvents(List<Event> allEvents) {
         long totalTime = 0;
         for (int i = 0; i < allEvents.size() - 1; i++) {
@@ -218,6 +205,58 @@ public class AppTimeService extends Service {
             }
         }
         return totalTime;
+    }
+
+    public List<Map<String, Integer>> getOpeningAmountsPastSevenDays() {
+        if (cacheValid(openingAmountsPastSevenDaysCache)) {
+            return openingAmountsPastSevenDaysCache.second;
+        }
+
+        int numberOfDays = 7;
+        List<Future<Map<String, Integer>>> futures = new ArrayList<>(numberOfDays);
+        LocalDate today = LocalDate.now();
+
+        ExecutorService executorService = Executors.newFixedThreadPool(numberOfDays);
+
+        for (int i = 0; i < numberOfDays; i++) {
+            final long startTime = getStartTime(today.minusDays(i + 1));
+            final long endTime = getEndTime(today.minusDays(i));
+
+            Future<Map<String, Integer>> future = executorService.submit(() -> getOpeningAmountsForTimeRange(startTime, endTime));
+            futures.add(i, future);
+        }
+
+        executorService.shutdown();
+
+        List<Map<String, Integer>> weekList = getValuesFromFutures(numberOfDays, futures);
+        openingAmountsPastSevenDaysCache = new Pair<>(System.currentTimeMillis(), weekList);
+        return weekList;
+    }
+
+    private Map<String, Integer> getOpeningAmountsForTimeRange(long startTime, long endTime) {
+        UsageEvents usageEvents = statsManager.queryEvents(startTime, endTime);
+
+        Map<String, Integer> openingAmounts = new HashMap<>();
+
+        while (usageEvents.hasNextEvent()) {
+            Event currentEvent = new Event();
+            usageEvents.getNextEvent(currentEvent);
+            String packageName = currentEvent.getPackageName();
+            if (!allPackageNames.contains(packageName)) {
+                continue;
+            }
+            if (currentEvent.getEventType() == Event.ACTIVITY_RESUMED && isNotUselessEvent(currentEvent)) {
+                openingAmounts.merge(packageName, 1, Integer::sum);
+            }
+        }
+        return openingAmounts;
+    }
+
+    private boolean isNotUselessEvent(Event currentEvent) {
+        String className = currentEvent.getClassName();
+        return className != null
+            && (className.toLowerCase().contains("main")
+            || className.toLowerCase().contains("home"));
     }
 
     @Nullable
