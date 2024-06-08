@@ -24,8 +24,8 @@ public class TimeplanFragment extends Fragment {
         binding = FragmentTimeplanBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
-        final TextView textView = binding.textNotifications;
-        timeplanViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
+        //final TextView textView = binding.textNotifications;
+        //timeplanViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
         return root;
     }
 
