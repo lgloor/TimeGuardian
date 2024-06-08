@@ -6,14 +6,14 @@ import android.app.usage.UsageEvents.Event;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.os.IBinder;
 import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import com.os.timeguardian.utils.PackageUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -29,7 +29,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import java.util.stream.Collectors;
 
 public class AppTimeService extends Service {
     private static final long TEN_MINUTES = 10 * 60 * 60 * 1000L;
@@ -39,13 +38,11 @@ public class AppTimeService extends Service {
     private static Pair<Long, List<Map<String, Integer>>> openingAmountsPastSevenDaysCache;
     private static List<String> allPackageNames;
     private static final String TAG = "AppTimeService";
-    private final PackageManager packageManager;
     private final UsageStatsManager statsManager;
 
     public AppTimeService(Context context) {
         statsManager = (UsageStatsManager) context.getSystemService(USAGE_STATS_SERVICE);
-        packageManager = context.getPackageManager();
-        allPackageNames = getAllPackageNames();
+        allPackageNames = PackageUtil.getAllPackageNames(context);
     }
 
     public Map<String, Long> getUsageStatsToday() {
@@ -170,15 +167,6 @@ public class AppTimeService extends Service {
         }
 
         return getUsageTimeFromEvents(allPackageNames, eventsByPackage);
-    }
-
-    @NonNull
-    private List<String> getAllPackageNames() {
-        return packageManager.getInstalledApplications(0)
-                .stream()
-                .filter(applicationInfo -> (applicationInfo.flags & ApplicationInfo.FLAG_SYSTEM) != 1)
-                .map(applicationInfo -> applicationInfo.packageName)
-                .collect(Collectors.toList());
     }
 
     @NonNull
