@@ -3,4 +3,6 @@
     <string name="title_time">Time</string>
     <string name="title_openings">Openings</string>
     <string name="title_timeplan">Time Plan</string>
+    <string name="cancel">Cancel</string>
+    <string name="Logout">Logout</string>
 </resources>
