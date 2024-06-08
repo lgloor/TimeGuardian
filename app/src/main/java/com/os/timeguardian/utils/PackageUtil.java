@@ -20,7 +20,7 @@ public class PackageUtil {
     }
 
     @NonNull
-    private String getUserFriendlyAppName(String packageName, Context context) {
+    public static String getUserFriendlyAppName(String packageName, Context context) {
         PackageManager packageManager = context.getPackageManager();
         String userFriendlyAppName;
         try {
