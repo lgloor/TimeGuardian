@@ -35,7 +35,7 @@ android {
 }
 
 dependencies {
-
+    implementation(libs.philjay.mpandroidchart)
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.constraintlayout)
