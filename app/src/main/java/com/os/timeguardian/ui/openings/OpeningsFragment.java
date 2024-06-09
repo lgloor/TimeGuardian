@@ -11,6 +11,8 @@ import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -23,6 +25,7 @@ import com.github.mikephil.charting.highlight.Highlight;
 import com.os.timeguardian.R;
 import com.os.timeguardian.backend.service.AppTimeService;
 import com.os.timeguardian.databinding.FragmentOpeningsBinding;
+import com.os.timeguardian.model.AppOpeningsModel;
 import com.os.timeguardian.utils.HourValueFormatter;
 import com.os.timeguardian.utils.WeekdayValueFormatter;
 
@@ -37,6 +40,7 @@ public class OpeningsFragment extends Fragment {
     private AppTimeService service;
 
     private FragmentOpeningsBinding binding;
+    private RecyclerView recyclerView;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -44,10 +48,40 @@ public class OpeningsFragment extends Fragment {
         binding = FragmentOpeningsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
 
+        initializeRecyclerView();
+        initializeSpinnerAndBarChart();
+
+        return root;
+    }
+
+    private void initializeRecyclerView() {
+        recyclerView = binding.recycler;
+        List<Map<String, Integer>> result = service.getOpeningAmountsTodayGroupByHours();
+        Map<String, Integer> currentHourMap = result.get(result.size() - 1);
+        updateRecyclerViewItems(currentHourMap);
+    }
+
+    private void updateRecyclerViewItems(Map<String, Integer> map) {
+        List<Entry<String, Integer>> entries = sortMapByValueDesc(map);
+        List<AppOpeningsModel> models = setupRecyclerModels(entries);
+        OpeningsRecyclerAdapter adapter = new OpeningsRecyclerAdapter(requireContext(), models);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
+    }
+
+    private static List<AppOpeningsModel> setupRecyclerModels(List<Entry<String, Integer>> entries) {
+        List<AppOpeningsModel> models = new ArrayList<>(entries.size());
+        for (Entry<String, Integer> entry : entries) {
+            models.add(new AppOpeningsModel(entry.getKey(), entry.getValue()));
+        }
+        return models;
+    }
+
+    private void initializeSpinnerAndBarChart() {
         Spinner spinner1 = binding.spinner1;
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
                 requireContext(),
-                R.array.spinner_options_opening,
+                R.array.spinner_options,
                 android.R.layout.simple_spinner_item
         );
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -56,13 +90,15 @@ public class OpeningsFragment extends Fragment {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (position == 0) {
-                    List<Map<String, Integer>> openingAmountsTodayGroupByHours = service.getOpeningAmountsTodayGroupByHours();
-                    BarData data = getBarData(openingAmountsTodayGroupByHours);
-                    getFormattedBarChart(data, openingAmountsTodayGroupByHours, new HourValueFormatter());
+                    List<Map<String, Integer>> result = service.getOpeningAmountsTodayGroupByHours();
+                    updateRecyclerViewItems(result.get(result.size() - 1));
+                    BarData data = getBarData(result);
+                    getFormattedBarChart(data, result, new HourValueFormatter());
                 } else {
-                    List<Map<String, Integer>> openingAmountsPastSevenDays = service.getOpeningAmountsPastSevenDays();
-                    BarData data = getBarData(openingAmountsPastSevenDays);
-                    getFormattedBarChart(data, openingAmountsPastSevenDays, new WeekdayValueFormatter());
+                    List<Map<String, Integer>> result = service.getOpeningAmountsPastSevenDays();
+                    updateRecyclerViewItems(result.get(result.size() - 1));
+                    BarData data = getBarData(result);
+                    getFormattedBarChart(data, result, new WeekdayValueFormatter());
                 }
             }
             @Override
@@ -70,8 +106,6 @@ public class OpeningsFragment extends Fragment {
                 // do nothing
             }
         });
-
-        return root;
     }
 
     private void getFormattedBarChart(BarData data, List<Map<String, Integer>> openingAmounts, ValueFormatter formatter) {
@@ -96,14 +130,13 @@ public class OpeningsFragment extends Fragment {
         yAxis.setAxisMinimum(0);
     }
 
-    private static void updateRecyclerView(List<Map<String, Integer>> openingAmounts, BarChart barChart) {
+    private void updateRecyclerView(List<Map<String, Integer>> openingAmounts, BarChart barChart) {
         Optional.ofNullable(barChart.getHighlighted())
                 .filter(highlighted -> highlighted.length > 0)
                 .map(highlighted -> highlighted[0])
                 .ifPresent(highlight -> {
                     int x = (int) highlight.getX();
-                    List<Entry<String, Integer>> entries = sortMapByValueDesc(openingAmounts.get(x));
-                    //TODO: update recyclerView with entries
+                    updateRecyclerViewItems(openingAmounts.get(x));
                 });
     }
 
