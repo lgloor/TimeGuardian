@@ -1,6 +1,5 @@
 package com.os.timeguardian.ui.openings;
 
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,11 +8,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.github.mikephil.charting.charts.BarChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -44,17 +41,8 @@ public class OpeningsFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
         service = new AppTimeService(requireContext());
-
-        OpeningsViewModel openingsViewModel =
-                new ViewModelProvider(this).get(OpeningsViewModel.class);
-
         binding = FragmentOpeningsBinding.inflate(inflater, container, false);
         View root = binding.getRoot();
-
-        final TextView textView = binding.textDashboard;
-        openingsViewModel.getText().observe(getViewLifecycleOwner(), textView::setText);
-
-        requireActivity().startService(new Intent(requireContext(), AppTimeService.class));
 
         Spinner spinner1 = binding.spinner1;
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
@@ -71,7 +59,6 @@ public class OpeningsFragment extends Fragment {
                     List<Map<String, Integer>> openingAmountsTodayGroupByHours = service.getOpeningAmountsTodayGroupByHours();
                     BarData data = getBarData(openingAmountsTodayGroupByHours);
                     getFormattedBarChart(data, openingAmountsTodayGroupByHours, new HourValueFormatter());
-                    //todo: update barchart
                 } else {
                     List<Map<String, Integer>> openingAmountsPastSevenDays = service.getOpeningAmountsPastSevenDays();
                     BarData data = getBarData(openingAmountsPastSevenDays);
