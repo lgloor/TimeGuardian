@@ -21,11 +21,11 @@ import java.util.List;
 
 public class TimeRecyclerAdapter extends RecyclerView.Adapter<TimeRecyclerAdapter.ViewHolder> {
     Context context;
-    List<AppTimeModel> apps;
+    List<AppTimeModel> models;
 
-    public TimeRecyclerAdapter(Context context, List<AppTimeModel> apps) {
+    public TimeRecyclerAdapter(Context context, List<AppTimeModel> models) {
         this.context = context;
-        this.apps = apps;
+        this.models = models;
     }
     public static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
@@ -47,17 +47,18 @@ public class TimeRecyclerAdapter extends RecyclerView.Adapter<TimeRecyclerAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.imageView.setImageDrawable(getIcon(apps.get(position).getAppName()));
-        String appName = PackageUtil.getUserFriendlyAppName(apps.get(position).getAppName(), context);
-        long appTime = apps.get(position).getAppTime();
+        String packageName = models.get(position).getPackageName();
+        holder.imageView.setImageDrawable(getIcon(packageName));
+        String appName = PackageUtil.getUserFriendlyAppName(packageName, context);
+        long appTime = models.get(position).getAppTime();
         holder.appNameView.setText(appName);
         holder.appTimeView.setText(formatTime(appTime));
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
-    private Drawable getIcon(String appName) {
+    private Drawable getIcon(String packageName) {
         try {
-            return context.getPackageManager().getApplicationIcon(appName);
+            return context.getPackageManager().getApplicationIcon(packageName);
         } catch (PackageManager.NameNotFoundException e) {
             return context.getDrawable(R.drawable.ic_launcher_foreground);
         }
@@ -82,6 +83,6 @@ public class TimeRecyclerAdapter extends RecyclerView.Adapter<TimeRecyclerAdapte
 
     @Override
     public int getItemCount() {
-        return apps.size();
+        return models.size();
     }
 }

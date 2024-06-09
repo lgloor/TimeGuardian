@@ -1,16 +1,16 @@
 package com.os.timeguardian.model;
 
 public class AppTimeModel {
-    private final String appName;
+    private final String packageName;
     private final long appTime;
 
-    public AppTimeModel(String appName, long appTime) {
-        this.appName = appName;
+    public AppTimeModel(String packageName, long appTime) {
+        this.packageName = packageName;
         this.appTime = appTime;
     }
 
-    public String getAppName() {
-        return appName;
+    public String getPackageName() {
+        return packageName;
     }
 
     public long getAppTime() {
