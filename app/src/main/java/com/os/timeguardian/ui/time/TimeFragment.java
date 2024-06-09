@@ -53,7 +53,7 @@ public class TimeFragment extends Fragment {
         Map<String, Long> usageStatsToday = service.getUsageStatsToday();
         List<AppTimeModel> models = new ArrayList<>(usageStatsToday.size());
         for (Map.Entry<String, Long> entry : usageStatsToday.entrySet()) {
-            models.add(new AppTimeModel(entry.getKey(), entry.getValue().toString()));
+            models.add(new AppTimeModel(entry.getKey(), entry.getValue()));
         }
         return models;
     }

@@ -49,9 +49,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.imageView.setImageDrawable(getIcon(apps.get(position).getAppName()));
         String appName = PackageUtil.getUserFriendlyAppName(apps.get(position).getAppName(), context);
-        String appTime = apps.get(position).getAppTime();
+        long appTime = apps.get(position).getAppTime();
         holder.appNameView.setText(appName);
-        holder.appTimeView.setText(appTime);
+        holder.appTimeView.setText(formatTime(appTime));
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")
@@ -60,6 +60,23 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
             return context.getPackageManager().getApplicationIcon(appName);
         } catch (PackageManager.NameNotFoundException e) {
             return context.getDrawable(R.drawable.ic_launcher_foreground);
+        }
+    }
+
+    @SuppressLint("DefaultLocale")
+    public static String formatTime(long milliseconds) {
+        long totalSeconds = milliseconds / 1000;
+
+        long hours = totalSeconds / 3600;
+        long minutes = (totalSeconds % 3600) / 60;
+        long seconds = totalSeconds % 60;
+
+        if (hours > 0) {
+            return String.format("%02dh %02dmin %02dsec", hours, minutes, seconds);
+        } else if (minutes > 0) {
+            return String.format("%02dmin %02dsec", minutes, seconds);
+        } else {
+            return String.format("%02dsec", seconds);
         }
     }
 
