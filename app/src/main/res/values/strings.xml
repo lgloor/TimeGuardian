@@ -3,4 +3,8 @@
     <string name="title_time">Time</string>
     <string name="title_openings">Openings</string>
     <string name="title_timeplan">Time Plan</string>
+    <string-array name="spinner_options_opening">
+        <item>Today by hours</item>
+        <item>Past seven days</item>
+    </string-array>
 </resources>
