@@ -128,6 +128,7 @@ public class OpeningsFragment extends Fragment {
 
         YAxis yAxis = barChart.getAxisLeft();
         yAxis.setAxisMinimum(0);
+        yAxis.setTextColor(Color.rgb(128, 128, 128));
     }
 
     private void updateRecyclerView(List<Map<String, Integer>> openingAmounts, BarChart barChart) {
