@@ -31,7 +31,7 @@ public class TimeFragment extends Fragment {
         RecyclerView recyclerView = binding.recycler;
         List<AppTimeModel> appTimeModels = setupRecyclerModels();
 
-        RecyclerAdapter adapter = new RecyclerAdapter(requireContext(), appTimeModels);
+        TimeRecyclerAdapter adapter = new TimeRecyclerAdapter(requireContext(), appTimeModels);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(requireContext()));
 

@@ -19,11 +19,11 @@ import com.os.timeguardian.utils.PackageUtil;
 
 import java.util.List;
 
-public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
+public class TimeRecyclerAdapter extends RecyclerView.Adapter<TimeRecyclerAdapter.ViewHolder> {
     Context context;
     List<AppTimeModel> apps;
 
-    public RecyclerAdapter(Context context, List<AppTimeModel> apps) {
+    public TimeRecyclerAdapter(Context context, List<AppTimeModel> apps) {
         this.context = context;
         this.apps = apps;
     }
