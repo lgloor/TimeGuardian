@@ -35,6 +35,7 @@ public class AppTimeService extends Service {
     private static Pair<Long, Map<String, Long>> usageStatsTodayCache;
     private static Pair<Long, List<Map<String, Long>>> usageStatsTodayGroupByHoursCache;
     private static Pair<Long, List<Map<String, Long>>> usageStatsPastSevenDaysCache;
+    private static Pair<Long, List<Map<String, Integer>>> openingAmountsTodayGroupByHoursCache;
     private static Pair<Long, List<Map<String, Integer>>> openingAmountsPastSevenDaysCache;
     private static List<String> allPackageNames;
     private static final String TAG = "AppTimeService";
@@ -193,6 +194,30 @@ public class AppTimeService extends Service {
             }
         }
         return totalTime;
+    }
+
+    public List<Map<String, Integer>> getOpeningAmountsTodayGroupByHours() {
+        if (cacheValid(openingAmountsTodayGroupByHoursCache)) {
+            return openingAmountsTodayGroupByHoursCache.second;
+        }
+
+        int hoursToShow = LocalDateTime.now().getHour() + 1;
+        List<Future<Map<String, Integer>>> futures = new ArrayList<>(hoursToShow);
+        LocalDateTime maxTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(hoursToShow, 0));
+        ExecutorService executorService = Executors.newFixedThreadPool(hoursToShow);
+
+        for (int i = 0; i < hoursToShow; i++) {
+            final long startTime = convertToEpochMilli(maxTime.minusHours(hoursToShow - i));
+            final long endTime =  convertToEpochMilli(maxTime.minusHours(hoursToShow - i - 1));
+
+            Future<Map<String, Integer>> future = executorService.submit(() -> getOpeningAmountsForTimeRange(startTime, endTime));
+            futures.add(i, future);
+        }
+        executorService.shutdown();
+
+        List<Map<String, Integer>> hourList = getValuesFromFutures(hoursToShow, futures);
+        openingAmountsTodayGroupByHoursCache = new Pair<>(System.currentTimeMillis(), hourList);
+        return hourList;
     }
 
     public List<Map<String, Integer>> getOpeningAmountsPastSevenDays() {
