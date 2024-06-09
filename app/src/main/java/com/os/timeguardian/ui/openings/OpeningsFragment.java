@@ -27,10 +27,10 @@ import com.os.timeguardian.backend.service.AppTimeService;
 import com.os.timeguardian.databinding.FragmentOpeningsBinding;
 import com.os.timeguardian.model.AppOpeningsModel;
 import com.os.timeguardian.utils.HourValueFormatter;
+import com.os.timeguardian.utils.MapUtil;
 import com.os.timeguardian.utils.WeekdayValueFormatter;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -62,7 +62,7 @@ public class OpeningsFragment extends Fragment {
     }
 
     private void updateRecyclerViewItems(Map<String, Integer> map) {
-        List<Entry<String, Integer>> entries = sortMapByValueDesc(map);
+        List<Entry<String, Integer>> entries = MapUtil.sortMapByValueDesc(map);
         List<AppOpeningsModel> models = setupRecyclerModels(entries);
         OpeningsRecyclerAdapter adapter = new OpeningsRecyclerAdapter(requireContext(), models);
         recyclerView.setAdapter(adapter);
@@ -144,7 +144,7 @@ public class OpeningsFragment extends Fragment {
         List<BarEntry> barEntries = new ArrayList<>(data.size());
         int count = 0;
         for (Map<String, Integer> map : data) {
-            List<Entry<String, Integer>> entries = sortMapByValueDesc(map);
+            List<Entry<String, Integer>> entries = MapUtil.sortMapByValueDesc(map);
             if (entries.size() > 3) {
                 barEntries.add(formatBigBarData(count++, entries));
             } else {
@@ -176,13 +176,6 @@ public class OpeningsFragment extends Fragment {
             otherOpens += entries.get(i).getValue();
         }
         return new BarEntry(count, new float[]{mostOpens, secondMostOpens, thirdMostOpens, otherOpens});
-    }
-
-    public static <K, V extends Comparable<? super V>> List<Entry<K, V>> sortMapByValueDesc(Map<K, V> map) {
-        List<Entry<K, V>> list = new ArrayList<>(map.entrySet());
-        list.sort(Entry.comparingByValue());
-        Collections.reverse(list);
-        return list;
     }
 
     @Override
