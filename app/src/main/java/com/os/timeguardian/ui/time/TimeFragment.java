@@ -29,6 +29,7 @@ import com.os.timeguardian.model.AppTimeModel;
 import com.os.timeguardian.utils.HourValueFormatter;
 import com.os.timeguardian.utils.MapUtil;
 import com.os.timeguardian.utils.MillisecondsToHoursFormatter;
+import com.os.timeguardian.utils.MillisecondsToMinFormatter;
 import com.os.timeguardian.utils.WeekdayValueFormatter;
 
 import java.util.ArrayList;
@@ -78,12 +79,12 @@ public class TimeFragment extends Fragment {
                     List<Map<String, Long>> result = service.getUsageStatsTodayGroupByHours();
                     updateRecyclerViewItems(result.get(result.size() - 1));
                     BarData data = getBarData(result);
-                    getFormattedBarChart(data, result, new HourValueFormatter());
+                    getFormattedBarChart(data, result, new HourValueFormatter(), new MillisecondsToMinFormatter(), 1000 * 60);
                 } else {
                     List<Map<String, Long>> result = service.getUsageStatsPastSevenDays();
                     updateRecyclerViewItems(result.get(result.size() - 1));
                     BarData data = getBarData(result);
-                    getFormattedBarChart(data, result, new WeekdayValueFormatter());
+                    getFormattedBarChart(data, result, new WeekdayValueFormatter(), new MillisecondsToHoursFormatter(), 1000 * 60 * 60);
                 }
             }
             @Override
@@ -93,7 +94,7 @@ public class TimeFragment extends Fragment {
         });
     }
 
-    private void getFormattedBarChart(BarData data, List<Map<String, Long>> appTimes, ValueFormatter formatter) {
+    private void getFormattedBarChart(BarData data, List<Map<String, Long>> appTimes, ValueFormatter xFormatter, ValueFormatter yFormatter, float granularity) {
         BarChart barChart = binding.idBarChart;
         barChart.setData(data);
         barChart.getDescription().setEnabled(false);
@@ -107,14 +108,15 @@ public class TimeFragment extends Fragment {
 
         XAxis xAxis = barChart.getXAxis();
         xAxis.setDrawGridLines(false);
-        xAxis.setValueFormatter(formatter);
+        xAxis.setValueFormatter(xFormatter);
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
         xAxis.setTextColor(Color.rgb(128, 128, 128));
 
         YAxis yAxis = barChart.getAxisLeft();
         yAxis.setAxisMinimum(0);
-        yAxis.setValueFormatter(new MillisecondsToHoursFormatter());
-        yAxis.setGranularity(1000 * 60 * 60);
+        yAxis.setValueFormatter(yFormatter);
+        yAxis.setGranularity(granularity);
+        yAxis.setTextColor(Color.rgb(128, 128, 128));
     }
 
     private void updateRecyclerView(List<Map<String, Long>> appTimes, BarChart barChart) {
