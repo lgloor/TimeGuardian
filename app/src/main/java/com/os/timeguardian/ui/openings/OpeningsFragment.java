@@ -55,7 +55,6 @@ public class OpeningsFragment extends Fragment {
         //List<Map<String, Long>> usageStatsTodayGroupByHours = service.getUsageStatsTodayGroupByHours();
         //Map<String, Integer> openingAmountsToday = service.getOpeningAmountsToday();
         List<Map<String, Integer>> openingAmountsPastSevenDays = service.getOpeningAmountsPastSevenDays();
-        Collections.reverse(openingAmountsPastSevenDays);
         BarData data = getBarData(openingAmountsPastSevenDays);
         getFormattedBarChart(data, openingAmountsPastSevenDays);
         return root;

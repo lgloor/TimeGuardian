@@ -51,7 +51,7 @@ public class AppTimeService extends Service {
         }
 
         LocalDate today = LocalDate.now();
-        long startTime = getStartTime(today.minusDays(1));
+        long startTime = getStartTime(today);
         long endTime = getEndTime(today);
         Map<String, Long> usageStatsToday = getUsageTimeForRange(startTime, endTime);
         usageStatsTodayCache = new Pair<>(System.currentTimeMillis(), usageStatsToday);
@@ -70,8 +70,8 @@ public class AppTimeService extends Service {
         ExecutorService executorService = Executors.newFixedThreadPool(hoursToShow);
 
         for (int i = 0; i < hoursToShow; i++) {
-            final long startTime = convertToEpochMilli(maxTime.minusHours(i + 1));
-            final long endTime =  convertToEpochMilli(maxTime.minusHours(i));
+            final long startTime = convertToEpochMilli(maxTime.minusHours(hoursToShow - i));
+            final long endTime =  convertToEpochMilli(maxTime.minusHours(hoursToShow - i - 1));
 
             Future<Map<String, Long>> future = executorService.submit(() -> getUsageTimeForRange(startTime, endTime));
             futures.add(i, future);
@@ -96,8 +96,8 @@ public class AppTimeService extends Service {
         ExecutorService executorService = Executors.newFixedThreadPool(numberOfDays);
 
         for (int i = 0; i < numberOfDays; i++) {
-            final long startTime = getStartTime(today.minusDays(i + 1));
-            final long endTime = getEndTime(today.minusDays(i));
+            final long startTime = getStartTime(today.minusDays(numberOfDays - i - 1));
+            final long endTime = getEndTime(today.minusDays(numberOfDays - i - 1));
 
             Future<Map<String, Long>> future = executorService.submit(() -> getUsageTimeForRange(startTime, endTime));
             futures.add(i, future);
@@ -207,8 +207,8 @@ public class AppTimeService extends Service {
         ExecutorService executorService = Executors.newFixedThreadPool(numberOfDays);
 
         for (int i = 0; i < numberOfDays; i++) {
-            final long startTime = getStartTime(today.minusDays(i + 1));
-            final long endTime = getEndTime(today.minusDays(i));
+            final long startTime = getStartTime(today.minusDays(numberOfDays - i - 1));
+            final long endTime = getEndTime(today.minusDays(numberOfDays - i - 1));
 
             Future<Map<String, Integer>> future = executorService.submit(() -> getOpeningAmountsForTimeRange(startTime, endTime));
             futures.add(i, future);
