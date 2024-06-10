@@ -76,7 +76,7 @@ public class DialogWindowEdit {
             @Override
             public void onClick(View v) {
                 String item = (String) spinner.getSelectedItem();
-                String str = "App: " + " will be deleted";
+                String str = "App: " + item + " will be deleted";
                 Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
                 timeplanFragment.deletePunishment(item);
                 updateSpinnerItems();
