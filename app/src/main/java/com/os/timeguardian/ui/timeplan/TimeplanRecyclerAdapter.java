@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.os.timeguardian.R;
 import com.os.timeguardian.model.AppTimeplanModel;
+import com.os.timeguardian.utils.PackageUtil;
 
 import java.util.List;
 
@@ -56,6 +57,10 @@ public class TimeplanRecyclerAdapter extends RecyclerView.Adapter<TimeplanRecycl
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         String packageName = models.get(position).getPackageName();
         holder.imageView.setImageDrawable(getIcon(packageName));
+        String appName = PackageUtil.getUserFriendlyAppName(packageName, context);
+        String punishmentLevel = models.get(position).getPunishmentLevel();
+        holder.appNameView.setText(appName);
+        holder.appTimeView.setText(punishmentLevel);
     }
 
     @SuppressLint("UseCompatLoadingForDrawables")

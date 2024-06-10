@@ -5,6 +5,7 @@
     <string name="title_timeplan">Time Plan</string>
     <string name="cancel">Cancel</string>
     <string name="Logout">Logout</string>
+    <string name="Apply">Apply</string>
     <string-array name="spinner_options">
         <item>Today by hours</item>
         <item>Past seven days</item>

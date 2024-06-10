@@ -10,7 +10,7 @@ public class TimeViewModel extends ViewModel {
 
     public TimeViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("Du Hurensohn");
+        mText.setValue("This is the time fragment.");
     }
 
     public LiveData<String> getText() {
