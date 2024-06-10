@@ -32,10 +32,9 @@ public class TimeplanFragment extends Fragment {
     private FragmentTimeplanBinding binding;
     private FloatingActionButton addButton;
     private Button editButton;
-    TextView textView;
     private Context context;
     private Dialog dialog;
-    private Button cancelButton, logoutButton;
+    private DialogWindow dialogWindow;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -47,36 +46,14 @@ public class TimeplanFragment extends Fragment {
 
         addButton = binding.floatingActionButton;
         editButton = binding.button;
-        textView = binding.text;
 
         addButton.findViewById(R.id.floatingActionButton);
         editButton.findViewById(R.id.button);
-        textView.findViewById(R.id.text);
         context = requireContext();
 
+        dialogWindow = new DialogWindow(binding, context);
+        dialog = dialogWindow.getDialog();
 
-        dialog = new Dialog(getContext());
-        dialog.setContentView(R.layout.custom_dialog_file);
-        dialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        dialog.getWindow().setBackgroundDrawable(ContextCompat.getDrawable(getContext(), R.drawable.custom_dialog_bg));
-        dialog.setCancelable(false);
-
-        logoutButton = dialog.findViewById(R.id.logoutButton);
-        cancelButton = dialog.findViewById(R.id.cancelButton);
-
-        cancelButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        logoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
 
         addButton.setOnClickListener(new View.OnClickListener() {
 
