@@ -1,23 +1,14 @@
 package com.os.timeguardian.ui.timeplan;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.media.AudioManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.Button;
-import android.widget.RadioButton;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.content.res.AppCompatResources;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -25,16 +16,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.os.timeguardian.R;
-import com.os.timeguardian.backend.service.BrightnessHelper;
-import com.os.timeguardian.backend.service.NotificationHelper;
 import com.os.timeguardian.backend.service.PunishmentService;
-import com.os.timeguardian.backend.service.VolumeHelper;
 import com.os.timeguardian.databinding.FragmentTimeplanBinding;
 import com.os.timeguardian.model.AppTimeplanModel;
-import com.os.timeguardian.utils.PackageUtil;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -84,7 +70,7 @@ public class TimeplanFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-                //dialog.show();
+                dialog.show();
             }
         });
 

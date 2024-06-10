@@ -6,10 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.os.IBinder;
-import android.view.Window;
 
 import androidx.annotation.Nullable;
-import androidx.core.app.NotificationCompat;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,13 +15,12 @@ import java.util.Map;
 
 public class PunishmentService extends Service {
 
-    private HashMap<String, String> punishments;
+    private static final HashMap<String, String> punishments = new HashMap<>();
     private Context context;
     private FileHelper fileHelper;
 
     public PunishmentService(Context context) {
         this.context = context;
-        punishments = new HashMap<>();
         this.fileHelper = new FileHelper(context);
     }
 
@@ -42,7 +39,7 @@ public class PunishmentService extends Service {
     }
 
     public HashMap<String, String> getAllPunishments() {
-        return this.punishments;
+        return punishments;
     }
 
     public void takeAwaySound() {
