@@ -1,17 +1,15 @@
 package com.os.timeguardian.ui.timeplan;
 
-
-import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
@@ -20,10 +18,11 @@ import com.os.timeguardian.R;
 import com.os.timeguardian.databinding.FragmentTimeplanBinding;
 import com.os.timeguardian.utils.PackageUtil;
 
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
-public class DialogWindow {
+public class DialogWindowEdit {
 
     private FragmentTimeplanBinding binding;
     private Context context;
@@ -33,9 +32,10 @@ public class DialogWindow {
     private Spinner spinner;
     private RadioButton soft, middle, hard;
     private RadioGroup group;
+    private TextView textView;
     String[] listItems;
 
-    public DialogWindow(FragmentTimeplanBinding binding, Context context, TimeplanFragment timeplanFragment) {
+    public DialogWindowEdit(FragmentTimeplanBinding binding, Context context, TimeplanFragment timeplanFragment) {
         this.binding = binding;
         this.context = context;
         this.timeplanFragment = timeplanFragment;
@@ -53,6 +53,12 @@ public class DialogWindow {
         middle = dialog.findViewById(R.id.radioButton2);
         hard = dialog.findViewById(R.id.radioButton3);
         group = dialog.findViewById(R.id.radiogroup);
+        textView = dialog.findViewById(R.id.textView);
+        textView.setText("Delete Punishment.");
+        group.setVisibility(View.GONE);
+        soft.setClickable(false);
+        middle.setClickable(false);
+        hard.setClickable(false);
 
         setButtonFunctionality();
         setSpinnerItems();
@@ -67,42 +73,40 @@ public class DialogWindow {
         });
 
         applyButton.setOnClickListener(new View.OnClickListener() {
-            String pLevel = "Nothing";
             @Override
             public void onClick(View v) {
-                group.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                    @Override
-                    public void onCheckedChanged(RadioGroup group, int checkedId) {
-                        if (soft.isChecked()) {
-                            pLevel = "Soft";
-                        } else if (middle.isChecked()) {
-                            pLevel = "Middle";
-                        } else if (hard.isChecked()) {
-                            pLevel = "Hard";
-                        }
-                    }
-                });
                 String item = (String) spinner.getSelectedItem();
-                String str = "App: " + item + ", Punishment level: " + pLevel;
+                String str = "App: " + " will be deleted";
                 Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
-                timeplanFragment.addPunishment(item, pLevel);
-                timeplanFragment.notifyEditDialog();
+                timeplanFragment.deletePunishment(item);
+                updateSpinnerItems();
                 dialog.dismiss();
             }
         });
     }
 
+    public void updateSpinnerItems() {
+        setSpinnerItems();
+    }
     private void setSpinnerItems() {
         ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(context, android.R.layout.simple_list_item_1, android.R.id.text1);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(spinnerAdapter);
-        List<String> tempList = PackageUtil.getAllPackageNames(context);
-        listItems = tempList.stream().toArray(String[]::new);
-        for (String s : listItems)
-            spinnerAdapter.add(PackageUtil.getUserFriendlyAppName(s, context));
+        HashMap<String, String> tempList = timeplanFragment.getAllPunishments();
+        Set<String> keySet = tempList.keySet();
+        listItems = keySet.toArray(new String[0]);
+        for (String s : listItems) {
+            spinnerAdapter.add(s);
+        }
+        //List<String> tempList = PackageUtil.getAllPackageNames(context);
+        //listItems = tempList.stream().toArray(String[]::new);
+        //for (String s : listItems)
+            //spinnerAdapter.add(PackageUtil.getUserFriendlyAppName(s, context));
         spinnerAdapter.notifyDataSetChanged();
     }
+
     public Dialog getDialog() {
         return this.dialog;
     }
 }
+

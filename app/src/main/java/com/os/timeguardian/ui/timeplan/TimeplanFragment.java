@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -43,7 +44,9 @@ public class TimeplanFragment extends Fragment {
     private PunishmentService punishmentService;
     private Context context;
     private Dialog dialog;
+    private Dialog editDialog;
     private DialogWindow dialogWindow;
+    private DialogWindowEdit editWindow;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -63,8 +66,13 @@ public class TimeplanFragment extends Fragment {
         context = requireContext();
 
         punishmentService = new PunishmentService(context);
+
         dialogWindow = new DialogWindow(binding, context, this);
         dialog = dialogWindow.getDialog();
+
+        editWindow = new DialogWindowEdit(binding, context, this);
+        editDialog = editWindow.getDialog();
+
         initializeRecyclerView();
 
 
@@ -73,6 +81,13 @@ public class TimeplanFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 dialog.show();
+            }
+        });
+
+        editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editDialog.show();
             }
         });
 
@@ -111,4 +126,18 @@ public class TimeplanFragment extends Fragment {
         punishmentService.addNewPunishment(packageName, level);
         initializeRecyclerView();
     }
+
+    public void deletePunishment(String packageName) {
+        punishmentService.deletePunishment(packageName);
+        initializeRecyclerView();
+    }
+
+    public HashMap<String, String> getAllPunishments() {
+        return punishmentService.getAllPunishments();
+    }
+
+    public void notifyEditDialog() {
+        editWindow.updateSpinnerItems();
+    }
+
 }
