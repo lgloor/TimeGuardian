@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,7 +25,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.os.timeguardian.R;
+import com.os.timeguardian.backend.service.BrightnessHelper;
+import com.os.timeguardian.backend.service.NotificationHelper;
 import com.os.timeguardian.backend.service.PunishmentService;
+import com.os.timeguardian.backend.service.VolumeHelper;
 import com.os.timeguardian.databinding.FragmentTimeplanBinding;
 import com.os.timeguardian.model.AppTimeplanModel;
 import com.os.timeguardian.utils.PackageUtil;
@@ -80,7 +84,7 @@ public class TimeplanFragment extends Fragment {
 
             @Override
             public void onClick(View v) {
-                dialog.show();
+                //dialog.show();
             }
         });
 
