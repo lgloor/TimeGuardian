@@ -87,6 +87,7 @@ public class DialogWindow {
                 Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
                 timeplanFragment.addPunishment(item, pLevel);
                 timeplanFragment.notifyEditDialog();
+                timeplanFragment.onResume();
                 dialog.dismiss();
             }
         });

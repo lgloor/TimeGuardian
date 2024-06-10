@@ -136,6 +136,12 @@ public class TimeplanFragment extends Fragment {
         return punishmentService.getAllPunishments();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        initializeRecyclerView();
+    }
+
     public void notifyEditDialog() {
         editWindow.updateSpinnerItems();
     }

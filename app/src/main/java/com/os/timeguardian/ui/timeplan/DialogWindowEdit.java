@@ -80,6 +80,7 @@ public class DialogWindowEdit {
                 Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
                 timeplanFragment.deletePunishment(item);
                 updateSpinnerItems();
+                timeplanFragment.onResume();
                 dialog.dismiss();
             }
         });

@@ -19,20 +19,26 @@ public class PunishmentService extends Service {
 
     private HashMap<String, String> punishments;
     private Context context;
+    private FileHelper fileHelper;
 
     public PunishmentService(Context context) {
         this.context = context;
         punishments = new HashMap<>();
+        this.fileHelper = new FileHelper(context);
     }
 
 
     public void addNewPunishment(String packageName, String level) {
         if (level.equals("Nothing")) return;
-        punishments.put(packageName, level);
+        fileHelper.saveData(packageName, level);
+        updateLocalList();
+        //punishments.put(packageName, level);
     }
 
     public void deletePunishment(String packageName) {
-        punishments.remove(packageName);
+        fileHelper.removeData(packageName);
+        updateLocalList();
+        //punishments.remove(packageName);
     }
 
     public HashMap<String, String> getAllPunishments() {
@@ -43,6 +49,13 @@ public class PunishmentService extends Service {
         AudioManager audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
         audioManager.setStreamVolume(AudioManager.STREAM_RING, 0, 0);
         audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
+    }
+
+    private void updateLocalList() {
+        List<Map.Entry<String,String>>inputData = fileHelper.readAllData();
+        for (Map.Entry<String, String> entry : inputData) {
+            punishments.put(entry.getKey(), entry.getValue());
+        }
     }
 
     public void setScreenBrightness(int brightness) {
