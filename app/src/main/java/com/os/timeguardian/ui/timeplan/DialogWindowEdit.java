@@ -16,10 +16,8 @@ import androidx.core.content.ContextCompat;
 
 import com.os.timeguardian.R;
 import com.os.timeguardian.databinding.FragmentTimeplanBinding;
-import com.os.timeguardian.utils.PackageUtil;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Set;
 
 public class DialogWindowEdit {
