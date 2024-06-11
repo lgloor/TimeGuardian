@@ -4,6 +4,7 @@ import android.content.Context;
 import java.io.*;
 import java.util.*;
 
+// This class with his methods was created with the help of ChatGpt.
 public class FileHelper {
 
     private Context context;
