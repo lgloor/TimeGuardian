@@ -49,19 +49,6 @@ public class AppTimeService extends Service {
         allPackageNames = PackageUtil.getAllPackageNames(context);
     }
 
-    public Map<String, Long> getUsageStatsToday() {
-        if (cacheValid(usageStatsTodayCache)) {
-            return usageStatsTodayCache.second;
-        }
-
-        LocalDate today = LocalDate.now();
-        long startTime = getStartTime(today);
-        long endTime = getEndTime(today);
-        Map<String, Long> usageStatsToday = getUsageTimeForRange(startTime, endTime);
-        usageStatsTodayCache = new Pair<>(System.currentTimeMillis(), usageStatsToday);
-        return usageStatsToday;
-    }
-
     public List<Map<String, Long>> getUsageStatsTodayGroupByHours() {
         if (cacheValid(usageStatsTodayGroupByHoursCache)) {
             return usageStatsTodayGroupByHoursCache.second;
