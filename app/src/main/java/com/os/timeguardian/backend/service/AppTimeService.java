@@ -117,7 +117,7 @@ public class AppTimeService extends Service {
         return weekList;
     }
 
-    public long getUsageTimeOfCurrentForegroundForToday() {
+    public Pair<String, Long> getUsageTimeOfCurrentForegroundForToday() {
         String appInForeground = getAppInForeground();
         LocalDate today = LocalDate.now();
         long startTime = getStartTime(today);
@@ -132,7 +132,7 @@ public class AppTimeService extends Service {
             }
             events.add(currentEvent);
         }
-        return getTotalTimeEvents(events);
+        return new Pair<>(appInForeground, getTotalTimeEvents(events));
     }
 
     private String getAppInForeground() {
