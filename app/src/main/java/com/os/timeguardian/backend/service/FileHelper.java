@@ -94,10 +94,11 @@ public class FileHelper {
     // Hilfsmethode zum Schreiben aller Daten
     private void writeAllData(List<Map.Entry<String, String>> entries) {
         try (FileOutputStream fos = context.openFileOutput(fileName, Context.MODE_PRIVATE)) {
+            StringBuilder data = new StringBuilder();
             for (Map.Entry<String, String> entry : entries) {
-                String data = entry.getKey() + ":" + entry.getValue() + "\n";
-                fos.write(data.getBytes());
+                data.append(entry.getKey()).append(":").append(entry.getValue()).append("\n");
             }
+            fos.write(data.toString().getBytes());
         } catch (IOException e) {
             e.printStackTrace();
         }
