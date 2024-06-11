@@ -14,7 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.os.timeguardian.MainActivity;
-
+// This class with his methods was created with the help of ChatGpt.
 public class BrightnessHelper {
 
     private static final int WRITE_SETTINGS_PERMISSION_REQUEST_CODE = 100;
