@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
@@ -52,11 +53,25 @@ public class BackgroundService extends Service {
                 currentApp = "Docs"; //TODO: currentApp aktualisieren mit aktuell genutzter App.
                 HashMap<String, String> cmp = getPunishmentEntries();
                 if (cmp.containsKey(currentApp) && currentApp != null) {
+                    String punishment = cmp.get(currentApp);
+                    if (!lastUsedApp.equals(currentApp)) {
+                        tracker = 0;
+                    }
                     lastUsedApp = currentApp;
                     tracker+=5;
                     Log.e("Aktueller Zeitmesser", String.valueOf(tracker));
-                    if (tracker>=30) {
-                        notificationHelper.sendHighPriorityNotification("Soft punishment", "Achte mal auf deine Bildschirmzeit");
+                    if (tracker>=30 && punishment.equals("Soft")) {
+                        notificationHelper.sendHighPriorityNotification("Soft punishment", "Maybe take a look at your screen time.");
+                        tracker = 0;
+                    } else if (tracker>=30 && punishment.equals("Middle")) {
+                        notificationHelper.sendHighPriorityNotification("Middle punishment", "That is too much screen time. ");
+                        brightnessHelper.setSystemBrightness(10);
+                        tracker = 0;
+                    } else if(tracker>=30 && punishment.equals("Hard")) {
+                        notificationHelper.sendHighPriorityNotification("Hard punishment", "YOU GET THE ULTIMATE PUNISH !!!");
+                        brightnessHelper.setSystemBrightness(10);
+                        volumeHelper.setMaxVolume(AudioManager.STREAM_MUSIC);
+                        tracker = 0;
                     }
                 }
                 handler.postDelayed(this, 5000);
