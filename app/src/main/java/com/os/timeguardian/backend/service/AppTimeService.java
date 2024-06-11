@@ -1,8 +1,10 @@
 package com.os.timeguardian.backend.service;
 
+import android.app.ActivityManager;
 import android.app.Service;
 import android.app.usage.UsageEvents;
 import android.app.usage.UsageEvents.Event;
+import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
@@ -25,6 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -40,10 +44,12 @@ public class AppTimeService extends Service {
     private static List<String> allPackageNames;
     private static final String TAG = "AppTimeService";
     private final UsageStatsManager statsManager;
+    private final ActivityManager activityManager;
 
     public AppTimeService(Context context) {
         statsManager = (UsageStatsManager) context.getSystemService(USAGE_STATS_SERVICE);
         allPackageNames = PackageUtil.getAllPackageNames(context);
+        activityManager = (ActivityManager) context.getSystemService(ACTIVITY_SERVICE);
     }
 
     public Map<String, Long> getUsageStatsToday() {
@@ -111,7 +117,8 @@ public class AppTimeService extends Service {
         return weekList;
     }
 
-    public long getUsageTimeOfPackageForToday(String packageName) {
+    public long getUsageTimeOfCurrentForegroundForToday() {
+        String appInForeground = getAppInForeground();
         LocalDate today = LocalDate.now();
         long startTime = getStartTime(today);
         long endTime = getEndTime(today);
@@ -120,12 +127,30 @@ public class AppTimeService extends Service {
         List<Event> events = new ArrayList<>();
         Event currentEvent = new Event();
         while (usageEvents.getNextEvent(currentEvent)) {
-            if (!packageName.equals(currentEvent.getPackageName())) {
+            if (!appInForeground.equals(currentEvent.getPackageName())) {
                 continue;
             }
             events.add(currentEvent);
         }
         return getTotalTimeEvents(events);
+    }
+
+    private String getAppInForeground() {
+        String currentApp = "NULL";
+        long time = System.currentTimeMillis();
+        List<UsageStats> appList = statsManager.queryUsageStats(UsageStatsManager.INTERVAL_DAILY,  time - 1000*1000, time);
+        if (appList != null && !appList.isEmpty()) {
+            SortedMap<Long, UsageStats> mySortedMap = new TreeMap<>();
+            for (UsageStats usageStats : appList) {
+                mySortedMap.put(usageStats.getLastTimeUsed(), usageStats);
+            }
+            if (!mySortedMap.isEmpty()) {
+                currentApp = Objects.requireNonNull(mySortedMap.get(mySortedMap.lastKey())).getPackageName();
+            }
+        }
+
+        Log.e("adapter", "Current App in foreground is: " + currentApp);
+        return currentApp;
     }
 
     private static boolean cacheValid(Pair<Long, ?> cache) {
