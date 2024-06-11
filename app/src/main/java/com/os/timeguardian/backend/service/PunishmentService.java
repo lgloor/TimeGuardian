@@ -1,14 +1,20 @@
 package com.os.timeguardian.backend.service;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
+import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,11 +24,14 @@ public class PunishmentService extends Service {
     private static final HashMap<String, String> punishments = new HashMap<>();
     private Context context;
     private FileHelper fileHelper;
+    private BackgroundService backgroundService;
 
     public PunishmentService(Context context) {
         this.context = context;
         this.fileHelper = new FileHelper(context);
+        this.backgroundService = new BackgroundService(context, this.fileHelper);
         updateLocalList();
+        //startBackgroundService();
     }
 
 
@@ -57,14 +66,16 @@ public class PunishmentService extends Service {
         }
     }
 
-    public void setScreenBrightness(int brightness) {
-        ContentResolver cr = getContentResolver();
-        //Window window = getWindow();
-    }
+    /*public void startBackgroundService() {
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
+        Intent startServiceIntent = new Intent(context, this.getClass());
+        PendingIntent startService = PendingIntent.getService(context, 0, startServiceIntent, PendingIntent.FLAG_IMMUTABLE);
 
-    public void createNotification() {
-       // NotificationCompat.Builder nbuilder = (NotificationCompat.Builder) new NotificationCompat(getApplicationContext());
-    }
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(System.currentTimeMillis() + 1000*5);
+
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), 1000*5, startService);
+    }*/
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
