@@ -176,6 +176,8 @@ public class AppTimeService extends Service {
      * DO NOT USE FOR DATE RANGES THAT ARE MORE THAN 1 WEEK AGO! <br>
      * Events are only stored by the system for a few days.
      *
+     * created with the help of <a href="https://stackoverflow.com/a/67753802">StackOverflow</a>
+     *
      * @param startTime Start time of evaluation in milliseconds
      * @param endTime   End time of evaluation in milliseconds
      * @return Map of package names to usage time in milliseconds for the given time range
@@ -277,6 +279,9 @@ public class AppTimeService extends Service {
         return weekList;
     }
 
+    /**
+     * created with inspiration from <a href="https://stackoverflow.com/a/67753802">StackOverflow</a>
+     */
     private Map<String, Integer> getOpeningAmountsForTimeRange(long startTime, long endTime) {
         UsageEvents usageEvents = statsManager.queryEvents(startTime, endTime);
 
