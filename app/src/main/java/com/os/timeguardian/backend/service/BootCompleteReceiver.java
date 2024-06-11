@@ -8,6 +8,8 @@ import android.content.Intent;
 
 import java.util.Calendar;
 
+// This class with his methods was created with the help of ChatGpt.
+// Also the entry in the AndroidManifest.xml file was with the help of ChatGpt.
 public class BootCompleteReceiver extends BroadcastReceiver {
 
     @Override

@@ -12,6 +12,7 @@ import android.view.WindowManager;
 
 import com.os.timeguardian.ui.timeplan.TimeplanFragment;
 
+// This class with his methods was created with the help of ChatGpt.
 public class BrightnessHelperNew {
 
     private static final String TAG = "BrightnessHelper";

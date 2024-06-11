@@ -22,6 +22,8 @@ import java.util.List;
 
 import kotlin.Suppress;
 
+// This class with his methods was created with the help of ChatGpt.
+
 public class TimeplanRecyclerAdapter extends RecyclerView.Adapter<TimeplanRecyclerAdapter.ViewHolder> {
 
     Context context;

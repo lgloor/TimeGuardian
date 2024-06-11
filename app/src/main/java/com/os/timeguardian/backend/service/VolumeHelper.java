@@ -3,6 +3,7 @@ package com.os.timeguardian.backend.service;
 import android.content.Context;
 import android.media.AudioManager;
 
+// This class with his methods was created with the help of ChatGpt.
 public class VolumeHelper {
 
     private Context context;

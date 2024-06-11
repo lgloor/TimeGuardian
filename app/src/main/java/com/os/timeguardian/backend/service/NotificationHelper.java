@@ -13,6 +13,7 @@ import androidx.core.app.NotificationManagerCompat;
 
 import com.os.timeguardian.R;
 
+// This class with his methods was created with the help of ChatGpt.
 
 public class NotificationHelper {
 
