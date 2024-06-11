@@ -122,17 +122,9 @@ public class AppTimeService extends Service {
         LocalDate today = LocalDate.now();
         long startTime = getStartTime(today);
         long endTime = getEndTime(today);
-        UsageEvents usageEvents = statsManager.queryEvents(startTime, endTime);
+        Map<String, Long> usageTimeForRange = getUsageTimeForRange(startTime, endTime);
 
-        List<Event> events = new ArrayList<>();
-        Event currentEvent = new Event();
-        while (usageEvents.getNextEvent(currentEvent)) {
-            if (!appInForeground.equals(currentEvent.getPackageName())) {
-                continue;
-            }
-            events.add(currentEvent);
-        }
-        return new Pair<>(appInForeground, getTotalTimeEvents(events));
+        return new Pair<>(appInForeground, usageTimeForRange.getOrDefault(appInForeground, 0L));
     }
 
     private String getAppInForeground() {

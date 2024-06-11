@@ -1,7 +1,5 @@
 package com.os.timeguardian.backend.service;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -10,14 +8,11 @@ import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
 import android.util.Pair;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import com.os.timeguardian.ui.timeplan.TimeplanFragment;
 import com.os.timeguardian.utils.PackageUtil;
 
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,8 +54,7 @@ public class BackgroundService extends Service {
                 handler.postDelayed(this, 5000);*/
                 //currentApp = "Docs"; //TODO: currentApp aktualisieren mit aktuell genutzter App.
                 Pair<String, Long> usagePair = appTimeService.getUsageTimeOfCurrentForegroundForToday();
-                currentApp = usagePair.first;
-                currentApp = PackageUtil.getUserFriendlyAppName(currentApp,context);
+                currentApp = PackageUtil.getUserFriendlyAppName(usagePair.first, context);
                 currentTime = usagePair.second;
                 System.out.println(currentTime);
                 HashMap<String, String> cmp = getPunishmentEntries();
