@@ -124,6 +124,9 @@ public class AppTimeService extends Service {
         return new Pair<>(appInForeground, usageTimeForRange.getOrDefault(appInForeground, 0L));
     }
 
+    /**
+     * copied from <a href="https://stackoverflow.com/a/30778294">StackOverflow</a>
+     */
     private String getAppInForeground() {
         String currentApp = "NULL";
         long time = System.currentTimeMillis();
@@ -138,7 +141,6 @@ public class AppTimeService extends Service {
             }
         }
 
-        Log.e("adapter", "Current App in foreground is: " + currentApp);
         return currentApp;
     }
 
