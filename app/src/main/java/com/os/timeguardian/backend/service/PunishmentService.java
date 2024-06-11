@@ -1,20 +1,13 @@
 package com.os.timeguardian.backend.service;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.app.Service;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
-import android.os.Handler;
 import android.os.IBinder;
-import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,7 +42,7 @@ public class PunishmentService extends Service {
     }
 
     public HashMap<String, String> getAllPunishments() {
-        return this.punishments;
+        return punishments;
     }
 
     public void takeAwaySound() {
