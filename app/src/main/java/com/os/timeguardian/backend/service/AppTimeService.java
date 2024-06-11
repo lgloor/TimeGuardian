@@ -1,6 +1,5 @@
 package com.os.timeguardian.backend.service;
 
-import android.app.ActivityManager;
 import android.app.Service;
 import android.app.usage.UsageEvents;
 import android.app.usage.UsageEvents.Event;
@@ -44,12 +43,10 @@ public class AppTimeService extends Service {
     private static List<String> allPackageNames;
     private static final String TAG = "AppTimeService";
     private final UsageStatsManager statsManager;
-    private final ActivityManager activityManager;
 
     public AppTimeService(Context context) {
         statsManager = (UsageStatsManager) context.getSystemService(USAGE_STATS_SERVICE);
         allPackageNames = PackageUtil.getAllPackageNames(context);
-        activityManager = (ActivityManager) context.getSystemService(ACTIVITY_SERVICE);
     }
 
     public Map<String, Long> getUsageStatsToday() {
