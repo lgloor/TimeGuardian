@@ -111,6 +111,23 @@ public class AppTimeService extends Service {
         return weekList;
     }
 
+    public long getUsageTimeOfPackageForToday(String packageName) {
+        LocalDate today = LocalDate.now();
+        long startTime = getStartTime(today);
+        long endTime = getEndTime(today);
+        UsageEvents usageEvents = statsManager.queryEvents(startTime, endTime);
+
+        List<Event> events = new ArrayList<>();
+        Event currentEvent = new Event();
+        while (usageEvents.getNextEvent(currentEvent)) {
+            if (!packageName.equals(currentEvent.getPackageName())) {
+                continue;
+            }
+            events.add(currentEvent);
+        }
+        return getTotalTimeEvents(events);
+    }
+
     private static boolean cacheValid(Pair<Long, ?> cache) {
         return cache != null && cache.first >= System.currentTimeMillis() - TEN_MINUTES;
     }
