@@ -117,7 +117,7 @@ public class AppTimeService extends Service {
         return weekList;
     }
 
-    public Pair<String, Long> getUsageTimeOfCurrentForegroundForToday() {
+    public synchronized Pair<String, Long> getUsageTimeOfCurrentForegroundForToday() {
         String appInForeground = getAppInForeground();
         LocalDate today = LocalDate.now();
         long startTime = getStartTime(today);

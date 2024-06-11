@@ -9,11 +9,13 @@ import android.media.AudioManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.util.Log;
+import android.util.Pair;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
 import com.os.timeguardian.ui.timeplan.TimeplanFragment;
+import com.os.timeguardian.utils.PackageUtil;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -26,11 +28,13 @@ public class BackgroundService extends Service {
     private Context context;
     private FileHelper fileHelper;
     private String currentApp;
+    private Long currentTime;
     private BrightnessHelperNew brightnessHelper;
     private VolumeHelper volumeHelper;
     private NotificationHelper notificationHelper;
     private int tracker;
     private String lastUsedApp;
+    private AppTimeService appTimeService;
 
     public BackgroundService(Context context, FileHelper fileHelper) {
         tracker = 0;
@@ -39,6 +43,7 @@ public class BackgroundService extends Service {
         currentApp = "nothing";
         lastUsedApp = "nothing";
         this.fileHelper = fileHelper;
+        appTimeService = new AppTimeService(context);
         brightnessHelper = new BrightnessHelperNew(context);
         volumeHelper = new VolumeHelper(context);
         notificationHelper = new NotificationHelper(context);
@@ -52,7 +57,12 @@ public class BackgroundService extends Service {
                 /*Toast.makeText(context, "Hintergrundprozess läuft.", Toast.LENGTH_SHORT).show();
                 Log.e("Hintergrundprozess", "Läuft");
                 handler.postDelayed(this, 5000);*/
-                currentApp = "Docs"; //TODO: currentApp aktualisieren mit aktuell genutzter App.
+                //currentApp = "Docs"; //TODO: currentApp aktualisieren mit aktuell genutzter App.
+                Pair<String, Long> usagePair = appTimeService.getUsageTimeOfCurrentForegroundForToday();
+                currentApp = usagePair.first;
+                currentApp = PackageUtil.getUserFriendlyAppName(currentApp,context);
+                currentTime = usagePair.second;
+                System.out.println(currentTime);
                 HashMap<String, String> cmp = getPunishmentEntries();
                 if (cmp.containsKey(currentApp) && currentApp != null) {
                     String punishment = cmp.get(currentApp);
@@ -62,15 +72,15 @@ public class BackgroundService extends Service {
                     lastUsedApp = currentApp;
                     tracker+=5;
                     Log.e("Aktueller Zeitmesser", String.valueOf(tracker));
-                    if (tracker>=30 && punishment.equals("Soft")) {
+                    if (currentTime>=30000 && punishment.equals("Soft")) {
                         notificationHelper.sendHighPriorityNotification("Soft punishment", "Maybe take a look at your screen time.");
                         tracker = 0;
-                    } else if (tracker>=30 && punishment.equals("Middle")) {
+                    } else if (currentTime>=30000 && punishment.equals("Middle")) {
                         notificationHelper.sendHighPriorityNotification("Middle punishment", "That is too much screen time. ");
                         brightnessHelper.requestWriteSettingsPermission();
                         brightnessHelper.setSystemBrightness(0);
                         tracker = 0;
-                    } else if(tracker>=30 && punishment.equals("Hard")) {
+                    } else if(currentTime>=30000 && punishment.equals("Hard")) {
                         notificationHelper.sendHighPriorityNotification("Hard punishment", "YOU GET THE ULTIMATE PUNISH !!!");
                         brightnessHelper.requestWriteSettingsPermission();
                         brightnessHelper.setSystemBrightness(0);
