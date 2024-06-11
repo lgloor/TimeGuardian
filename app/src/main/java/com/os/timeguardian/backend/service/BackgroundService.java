@@ -13,6 +13,8 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.os.timeguardian.ui.timeplan.TimeplanFragment;
+
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +26,7 @@ public class BackgroundService extends Service {
     private Context context;
     private FileHelper fileHelper;
     private String currentApp;
-    private BrightnessHelper brightnessHelper;
+    private BrightnessHelperNew brightnessHelper;
     private VolumeHelper volumeHelper;
     private NotificationHelper notificationHelper;
     private int tracker;
@@ -37,7 +39,7 @@ public class BackgroundService extends Service {
         currentApp = "nothing";
         lastUsedApp = "nothing";
         this.fileHelper = fileHelper;
-        brightnessHelper = new BrightnessHelper(context);
+        brightnessHelper = new BrightnessHelperNew(context);
         volumeHelper = new VolumeHelper(context);
         notificationHelper = new NotificationHelper(context);
         startTracking();
@@ -65,11 +67,13 @@ public class BackgroundService extends Service {
                         tracker = 0;
                     } else if (tracker>=30 && punishment.equals("Middle")) {
                         notificationHelper.sendHighPriorityNotification("Middle punishment", "That is too much screen time. ");
-                        brightnessHelper.setSystemBrightness(10);
+                        brightnessHelper.requestWriteSettingsPermission();
+                        brightnessHelper.setSystemBrightness(0);
                         tracker = 0;
                     } else if(tracker>=30 && punishment.equals("Hard")) {
                         notificationHelper.sendHighPriorityNotification("Hard punishment", "YOU GET THE ULTIMATE PUNISH !!!");
-                        brightnessHelper.setSystemBrightness(10);
+                        brightnessHelper.requestWriteSettingsPermission();
+                        brightnessHelper.setSystemBrightness(0);
                         volumeHelper.setMaxVolume(AudioManager.STREAM_MUSIC);
                         tracker = 0;
                     }
